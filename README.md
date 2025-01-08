@@ -1,4 +1,7 @@
 # YouTube Data Analysis Project
+
+![Screenshot 2025-01-08 at 9 01 57 AM](https://github.com/user-attachments/assets/86974625-f819-45a4-8af8-c8a964b0b3a9)
+
 This project is an analysis of YouTube (Global) data to understand the trends of plant breeding related **8,971 videos** with **2.1 billion views** for **198 keywords** in **3 categories of concepts** (Old, Current, Modern) (**English** language only).
 
 ## Problem Statement
