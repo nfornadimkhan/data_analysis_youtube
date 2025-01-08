@@ -2,7 +2,7 @@
 google-api-python-client==2.88.0  # Required for YouTube Data API v3 handling
 python-dotenv==1.0.0  # Required for loading environment variables
 pandas==2.0.0  # Required for data manipulation and analysis
-numpy==1.24.3  # Required for numerical operations
+numpy==1.25.0  # Required for numerical operations
 isodate==0.6.1  # Required for date parsing
 
 # Visualization
