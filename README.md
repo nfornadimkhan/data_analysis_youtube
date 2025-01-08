@@ -534,14 +534,23 @@ Set up environment variables:
      ```
 
 ## Project Structure
+
 ├── README.md
+
 ├── requirements.txt
+
 ├── .env.example
+
 ├── .env # (git-ignored)
+
 ├── .gitignore
+
 ├── youtube_data_fetcher.py
+
 ├── dashboard.py
+
 └── youtube_data/
+
 └── all_videos_data.csv
 
 ## License
