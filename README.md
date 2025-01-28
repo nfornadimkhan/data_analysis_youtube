@@ -5,6 +5,8 @@ This project is an analysis of YouTube (Global) data to understand the trends of
 
 ![Screenshot 2025-01-28 at 11 04 25 PM](https://github.com/user-attachments/assets/11dfc423-34b2-40ea-9f00-5d5b981263d5)
 
+Github: https://github.com/nfornadimkhan/data_analysis_youtube/tree/main
+
 ## Project Setup
 ### 1. Clone the repository:
 ```bash
