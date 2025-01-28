@@ -1,6 +1,10 @@
 # YouTube Data Analysis Project
 This project is an analysis of YouTube (Global) data to understand the trends of plant breeding related **8,971 videos** with **2.1 billion views** for **198 keywords** in **3 categories of concepts** (Old, Current, Modern) (**English** language only). You can see the results with the help of a dashboard after running the script.
 
+📺 See Dashboard: https://mainnfornadim.streamlit.app/
+
+![Screenshot 2025-01-28 at 11 04 25 PM](https://github.com/user-attachments/assets/11dfc423-34b2-40ea-9f00-5d5b981263d5)
+
 ## Project Setup
 ### 1. Clone the repository:
 ```bash
