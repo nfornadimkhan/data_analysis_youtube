@@ -37,16 +37,20 @@ st.markdown("""
 .reportview-container { background: #f8f9fa }
 .sidebar .sidebar-content { background: #f8f9fa }
 h1 { 
-    color: #2E4057;
+    color: #21c648;
     font-weight: bold;
     padding-bottom: 20px;
 }
 h2 { color: #45B7D1; }
 h3 { color: #FF6B6B; }
 .stAlert { 
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #4ECDC4 !important;
+    color: white !important;
+    border: 2px solid #45B7D1 !important;
+    border-radius: 10px !important;
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+    opacity: 0.9 !important;
 }
 .metric-card {
     background-color: white;
@@ -65,16 +69,413 @@ def load_data():
 
 df = load_data()
 
-# Sidebar with enhanced styling
+# Sidebar
 st.sidebar.title("🌱 Navigation")
 page = st.sidebar.radio(
     "Choose a section",
-    ["Overview", "Trend Analysis", "Category Analysis", "Keyword Analysis", "Opportunity Analysis", "Results"]
+    ["Explanation", "Overview", "Trend Analysis", "Category Analysis", 
+     "Keyword Analysis", "Opportunity Analysis", "Code References"]
 )
 
+# Add the Explanation page
+if page == "Explanation":
+    st.title("🌱 Plant Breeding YouTube Content Analysis Project")
+    
+    # Project Overview
+    st.markdown("""
+    This project analyzes **8,971 videos** with **2.1 billion views** for **198 keywords** 
+    in **3 categories** of plant breeding concepts (Old, Current, Modern) on YouTube.
+    """)
+    
+    # Problem Statement
+    st.header("🎯 Problem Statement")
+    with st.expander("Why did we start this project?", expanded=True):
+        st.markdown("""
+        - We want to start a YouTube channel focusing on plant breeding concepts
+        - Existing SEO tools focus only on basic keyword metrics
+        - Need for comprehensive analysis of audience interaction across different concept categories
+        - YouTube's potential as an educational platform for plant breeding concepts
+        """)
+    
+    # Project Setup
+    st.header("⚙️ Project Setup")
+    with st.expander("How to set up and run the project"):
+        st.markdown("""
+        ### 1. Clone the repository:
+        ```bash
+        git clone git@github.com:nfornadimkhan/data_analysis_youtube.git
+        cd data_analysis_youtube
+        ```
+
+        ### 2. Install required packages
+        ```bash
+        pip install -r requirements.txt
+        ```   
+
+        ### 3. Run the Application
+        ```bash
+        streamlit run dashboard.py
+        ```
+        """)
+
+    # API Configuration
+    with st.expander("API Configuration"):
+        st.markdown("""
+        Get a YouTube Data API key from the [Google Cloud Console](https://console.cloud.google.com/)
+        
+        Set up environment variables:
+        1. Copy `.env.example` to `.env`:
+           ```bash
+           cp .env.example .env
+           ```
+        2. Edit `.env` and add your YouTube API key:
+           ```
+           YOUTUBE_API_KEY=your_actual_api_key_here
+           ```
+        """)
+
+    # Project Structure
+    st.header("📁 Project Structure")
+    st.code("""
+    project_directory/
+    ├── README.md
+    ├── requirements.txt
+    ├── analysis.ipynb
+    ├── .env.example
+    ├── .env # (git-ignored)
+    ├── .gitignore
+    ├── youtube_data_fetcher.py
+    ├── dashboard.py
+    ├── pre-commit
+    ├── youtube_data/
+    ├── fetch_state.json
+    """)
+
+    # Libraries Used
+    st.header("📚 Libraries Used")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        - **pandas:** Data manipulation and analysis
+        - **numpy:** Numerical operations
+        - **matplotlib:** Static visualizations
+        - **seaborn:** Statistical visualizations
+        - **plotly:** Interactive web visualizations
+        - **nltk:** Natural language processing
+        """)
+    with col2:
+        st.markdown("""
+        - **sentence-transformers:** BERT encodings
+        - **scikit-learn:** Machine learning tools
+        - **google-api-python-client:** YouTube API
+        - **python-dotenv:** Environment variables
+        - **isodate:** Date/time parsing
+        - **streamlit:** Web application
+        """)
+
+    # Keyword Classification
+    st.header("🔑 Keyword Classification")
+    
+    tab1, tab2, tab3 = st.tabs(["Old (Traditional)", "Current (Established)", "Modern (Cutting-Edge)"])
+    
+    with tab1:
+        st.markdown("""
+        **Focus:** Pre-20th century practices
+        - Phenotype-based selection
+        - Indigenous approaches
+        - Field observation methods
+        - Community-based breeding
+        
+        **Example Keywords:**
+        1. Traditional selective breeding
+        2. Landrace selection
+        3. Phenotypic selection
+        4. Pedigree breeding
+        5. Mass selection
+        """)
+    
+    with tab2:
+        st.markdown("""
+        **Focus:** Late 20th century methods
+        - Molecular biology integration
+        - Marker-assisted selection
+        - QTL mapping
+        - Heterosis exploitation
+        
+        **Example Keywords:**
+        1. Marker-assisted selection
+        2. QTL mapping
+        3. Hybrid vigor breeding
+        4. Backcross breeding
+        5. Recurrent selection
+        """)
+    
+    with tab3:
+        st.markdown("""
+        **Focus:** Emerging technologies
+        - CRISPR and gene editing
+        - AI/ML applications
+        - Computational breeding
+        - Precision agriculture
+        
+        **Example Keywords:**
+        1. CRISPR gene editing
+        2. Genome sequencing
+        3. Precision breeding
+        4. Synthetic biology
+        5. Gene network analysis
+        """)
+
+    # Methodology
+    st.header("🔍 Methodology")
+    
+    # Data Collection
+    with st.expander("1️⃣ Data Collection", expanded=True):
+        st.markdown("""
+        - Collected data using YouTube Data API v3
+        - 198 keywords (66 in each category)
+        - 50 videos per keyword
+        - Total of 8,971 relevant videos analyzed
+        
+        #### API Quota Management
+        - Search request: 100 units
+        - Video details: 50 units
+        - Total per keyword: 150 units
+        - Daily quota: 10,000 units
+        - Max keywords per day: 66
+        - Days needed: 3
+        """)
+    
+    # Data Cleaning
+    with st.expander("2️⃣ Data Cleaning & Preprocessing", expanded=True):
+        st.markdown("""
+        - Removed duplicate entries
+        - Standardized date formats
+        - Converted metrics to numeric format
+        - Created engagement rate metric
+        - Removed irrelevant content
+        - Added human-readable duration format
+        - Created engagement rate metric: [(likes + comments) / views] * 100
+        """)
+    
+    # Relevance Scoring
+    with st.expander("3️⃣ Content Relevance Analysis", expanded=True):
+        st.markdown("""
+        #### Relevance Scoring Components:
+        1. **Base Relevance (60%)**
+           - Direct Keyword Match (30%)
+           - Word Overlap (40%)
+           - Sequence Similarity (30%)
+        
+        2. **Semantic Similarity (40%)**
+           - Using SBERT for semantic analysis
+        
+        #### Score Categories:
+        - High: ≥ 40
+        - Medium: 20-40
+        - Low: 10-20
+        - Not Relevant: < 10
+        """)
+
+    # Key Findings
+    st.header("🎯 Key Findings")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("#### Top Performing Keywords")
+        st.markdown("""
+        1. Propagation Techniques
+           - Opportunity Score: 10.0/10
+           - 330M+ views
+        
+        2. Quantum Computing
+           - Opportunity Score: 5.3/10
+           - High engagement rate
+        """)
+    
+    with col2:
+        st.markdown("#### Best Publishing Times")
+        st.markdown("""
+        1. Saturday 22:00
+           - 6.86% engagement rate
+           - Low competition
+        
+        2. Sunday 18:00
+           - 6.71% engagement rate
+           - Moderate competition
+        """)
+
+    # Results and Recommendations
+    st.header("📊 Results and Recommendations")
+    
+    st.markdown("""
+    Based on our comprehensive analysis of YouTube content related to plant breeding, 
+    we have identified several key insights and recommendations:
+    """)
+    
+    # Overall Findings
+    with st.expander("Overall Findings", expanded=True):
+        st.markdown("""
+        1. **Growth Trend**
+           - Constant increase in plant breeding related videos on YouTube
+           - Rising engagement rates over the years
+           - Ideal timing for starting a plant breeding focused channel
+        
+        2. **Content Impact**
+           - Keywords like "Propagation Techniques" show exceptional performance
+           - Over 330 million total views for top-performing content
+           - High engagement rates indicating strong audience interest
+        
+        3. **Audience Preferences**
+           - Strong interest in practical, actionable content
+           - Growing demand for modern technological applications
+           - Balance between traditional methods and cutting-edge innovations
+        """)
+    
+    # High-Potential Keywords Analysis
+    with st.expander("High-Potential Keywords Analysis", expanded=True):
+        st.markdown("""
+        | **Keyword** | **Opportunity Score** | **Demand Score** | **Total Views** | **Engagement Per Video** | **Why It's Important** |
+        |-------------|----------------------|------------------|-----------------|------------------------|----------------------|
+        | Propagation Techniques | 10.0/10 | 6.7/10 | 330M+ | 136,589 | Highly searched and engages users effectively |
+        | Quantum Computing | 5.3/10 | 4.8/10 | 131M+ | 91,443 | Modern topic attracting tech-savvy professionals |
+        | Indigenous Methods | 5.2/10 | 4.3/10 | 169M+ | 73,288 | Appeals to sustainable practice enthusiasts |
+        | Historical Practices | 4.8/10 | 4.0/10 | 163M+ | 63,351 | Niche audience interested in agricultural evolution |
+        | CRISPR Gene Editing | 1.5/10 | 3.7/10 | 35M+ | 27,352 | Cutting-edge topic with global relevance |
+        """)
+    
+    # Publishing Strategy
+    with st.expander("Optimal Publishing Strategy", expanded=True):
+        st.markdown("""
+        #### Best Publishing Times
+        | **Day** | **Time** | **Engagement Rate** | **Competing Videos** | **Average Views** | **Why This Time Works** |
+        |---------|----------|---------------------|---------------------|-------------------|------------------------|
+        | Saturday | 22:00 | 6.86% | 10 | - | High engagement, lowest competition |
+        | Sunday | 18:00 | 6.71% | 24 | - | Peak weekend engagement |
+        | Saturday | 06:00 | 5.58% | 31 | 764,234 | Strong early morning performance |
+        | Sunday | 14:00 | 4.18% | - | 3,192,022 | Highest average views |
+        
+        #### Key Timing Insights
+        - Weekend publishing shows consistently higher engagement
+        - Early morning and evening slots perform best
+        - Lower competition during certain time slots provides opportunities
+        - Balance between engagement rate and view potential
+        """)
+    
+    # Engagement Analysis
+    with st.expander("Detailed Engagement Analysis", expanded=True):
+        st.markdown("""
+        #### Category-wise Performance
+
+        **Old Category:**
+        - Median Views: 909.50
+        - Mean Views: 476,292.65
+        - Median Likes: 15
+        - Mean Likes: 9,181.28
+        - Average Engagement Rate: 1.84%
+        - Notable: Highest viral potential with some videos reaching 117M views
+
+        **Modern Category:**
+        - Median Views: 487.50
+        - Mean Views: 200,511.95
+        - Median Likes: 7
+        - Average Engagement Rate: 1.73%
+        - Notable: Strong performance in niche technical topics
+
+        **Current Category:**
+        - Median Views: 791.00
+        - Mean Views: 72,754.74
+        - Median Likes: 12
+        - Mean Likes: 957.30
+        - Average Engagement Rate: 1.81%
+        - Notable: Steady performance with consistent engagement
+        """)
+    
+    # Content Strategy Recommendations
+    with st.expander("Content Strategy Recommendations", expanded=True):
+        st.markdown("""
+        #### 1. Content Focus
+        - Start with practical, hands-on content like propagation techniques
+        - Balance traditional methods with modern applications
+        - Create content series that bridge old and new concepts
+        
+        #### 2. Topic Selection Strategy
+        - **High-Impact Traditional Topics:**
+          - Propagation techniques
+          - Indigenous breeding methods
+          - Historical agronomic practices
+        
+        - **Promising Modern Topics:**
+          - Quantum computing applications
+          - CRISPR gene editing
+          - Precision agriculture
+        
+        #### 3. Engagement Optimization
+        - Focus on weekend publishing
+        - Utilize optimal time slots (Saturday 22:00, Sunday 18:00)
+        - Create content that encourages discussion and interaction
+        
+        #### 4. Growth Strategy
+        - Start with established topics to build audience
+        - Gradually introduce modern concepts
+        - Maintain consistent publishing schedule
+        - Focus on educational value and practical applications
+        """)
+    
+    # Future Opportunities
+    with st.expander("Future Opportunities", expanded=True):
+        st.markdown("""
+        #### Emerging Trends
+        1. **Technology Integration**
+           - AI/ML applications in breeding
+           - Digital phenotyping
+           - Automated breeding systems
+        
+        2. **Sustainable Practices**
+           - Climate-resilient breeding
+           - Eco-genomics
+           - Urban crop development
+        
+        3. **Educational Content**
+           - Interactive tutorials
+           - Virtual demonstrations
+           - Case studies and success stories
+        
+        #### Growth Areas
+        - **Untapped Niches:** Several modern breeding techniques show high demand but low content supply
+        - **Cross-Category Content:** Combining traditional wisdom with modern technology
+        - **Practical Applications:** Focus on real-world implementation and results
+        """)
+
+    # Team & Acknowledgements
+    st.header("👥 Team & Acknowledgements")
+    
+    st.markdown("""
+    **Project Team:**
+    - Nadim Khan
+    - Samaneh Javidian
+    
+    **Special Thanks:**
+    - Jun. Prof. Christian Krupitzer
+    - Maryam Lotfaliani
+    
+    *Part of Practical Introduction to Programming with Python (1511-501) - Winter term 2024/25*
+    
+    University of Hohenheim, Stuttgart, Germany
+    """)
+    
+    # License
+    st.markdown("---")
+    st.markdown("""
+    [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+    
+    © 2024 Nadim Khan and Samaneh Javidian
+    """)
+
 # Overview Page
-if page == "Overview":
-    st.title("🎯 Plant Breeding YouTube Content Analysis")
+elif page == "Overview":
+    st.title("🎯 Overview")
     
     # Category-wise metrics
     st.subheader("📊 Category Performance")
@@ -193,7 +594,7 @@ elif page == "Trend Analysis":
     st.plotly_chart(fig_engagement, use_container_width=True)
 
 
-
+    
     # Metric selector with custom styling
     metric = st.selectbox(
         "📈 Select Metric",
@@ -281,334 +682,593 @@ elif page == "Category Analysis":
 
 # Keyword Analysis Page
 elif page == "Keyword Analysis":
-    st.title("Keyword Analysis")
+    st.title("🔍 Keyword Analysis & Insights")
     
-    # Keyword search and filtering
-    search_term = st.text_input("Search Keywords")
-    if search_term:
-        filtered_df = df[df['keyword'].str.contains(search_term, case=False)]
-    else:
-        filtered_df = df
+    # Top-level Insights
+    st.header("📊 Key Insights")
     
-    # Keyword metrics
-    keyword_metrics = filtered_df.groupby('keyword').agg({
-        'view_count': 'mean',
-        'engagement_rate': 'mean',
-        'video_id': 'count'
-    }).reset_index()
-    
-    fig = px.scatter(keyword_metrics, x='view_count', y='engagement_rate',
-                     size='video_id', hover_data=['keyword'],
-                     title="Keyword Performance Matrix")
-    st.plotly_chart(fig)
-
-# Opportunity Analysis Page
-elif page == "Opportunity Analysis":
-    st.title("🌱 Content Opportunity Analysis")
-    
-    def calculate_metrics(df):
-        """Calculate comprehensive content metrics"""
-        metrics = df.groupby(['category', 'keyword']).agg({
-            'view_count': ['sum', 'mean'],
-            'like_count': 'sum',
-            'comment_count': 'sum',
-            'engagement_rate': 'mean',
-            'published_date': 'max'
-        }).reset_index()
-        
-        metrics.columns = ['category', 'keyword', 'total_views', 'avg_views', 
-                          'total_likes', 'total_comments', 'avg_engagement', 'latest_date']
-        
-        # Calculate engagement impact
-        metrics['engagement_impact'] = (
-            metrics['total_likes'] + metrics['total_comments']
-        ) / metrics['total_views']
-        
-        # Calculate scores
-        metrics['demand_score'] = (
-            0.4 * (metrics['total_views'] / metrics['total_views'].max()) +
-            0.4 * (metrics['avg_engagement'] / metrics['avg_engagement'].max()) +
-            0.2 * (metrics['engagement_impact'] / metrics['engagement_impact'].max())
-        ) * 10
-        
-        metrics['opportunity_score'] = (
-            0.5 * (metrics['avg_engagement'] / metrics['avg_engagement'].max()) +
-            0.3 * (metrics['total_views'] / metrics['total_views'].max()) +
-            0.2 * (metrics['engagement_impact'] / metrics['engagement_impact'].max())
-        ) * 10
-        
-        return metrics
-    
-    # Calculate metrics
-    metrics = calculate_metrics(df)
-    
-    # 1. Overview Metrics
-    st.header("📊 Market Overview")
+    # Create three columns for key metrics
     col1, col2, col3 = st.columns(3)
     
     with col1:
         st.metric(
-            "Average Demand Score",
-            f"{metrics['demand_score'].mean():.1f}/10",
-            delta=f"{metrics['demand_score'].std():.1f} σ"
+            "Most Viewed Category",
+            "Old",
+            "476,292 avg views",
+            help="Category with highest average views per video"
         )
-    
     with col2:
         st.metric(
-            "Average Opportunity Score",
-            f"{metrics['opportunity_score'].mean():.1f}/10",
-            delta=f"{metrics['opportunity_score'].std():.1f} σ"
+            "Highest Engagement",
+            "Traditional Methods",
+            "+1.84%",
+            help="Category with best engagement rate"
         )
-    
     with col3:
-        high_potential = metrics[
-            (metrics['demand_score'] > metrics['demand_score'].median()) &
-            (metrics['opportunity_score'] > metrics['opportunity_score'].median())
-        ]
         st.metric(
-            "High Potential Keywords",
-            len(high_potential),
-            delta=f"{len(high_potential)/len(metrics)*100:.1f}%"
+            "Best Time to Publish",
+            "Weekend Evenings",
+            "+6.86% engagement",
+            help="Optimal publishing time for maximum engagement"
         )
     
+    # Top Keywords Overview
+    st.subheader("🏆 Top Performing Keywords")
     
-    # 2. Opportunity Distribution
-    st.header("📈 Opportunity Distribution")
-    
-    tab1, tab2 = st.tabs(["Heatmap", "Top Keywords"])
+    tab1, tab2, tab3 = st.tabs(["By Views", "By Engagement", "By Growth Potential"])
     
     with tab1:
-        # Create demand level bins
-        metrics['demand_level'] = pd.qcut(
-            metrics['demand_score'], 
-            q=5, 
-            labels=['Very Low', 'Low', 'Medium', 'High', 'Very High']
-        )
+        # Top keywords by views
+        top_by_views = df.groupby('keyword').agg({
+            'view_count': 'sum',
+            'category': 'first'
+        }).nlargest(10, 'view_count').reset_index()
         
-        # Create heatmap
-        heatmap_data = metrics.pivot_table(
-            index='category',
-            columns='demand_level',
-            values='opportunity_score',
-            aggfunc='mean'
+        fig_views = px.bar(
+            top_by_views,
+            x='keyword',
+            y='view_count',
+            color='category',
+            color_discrete_map=COLOR_SCHEMES['category_colors'],
+            title="Top 10 Keywords by Total Views",
+            labels={'view_count': 'Total Views', 'keyword': 'Keyword'}
         )
-        
-        fig_heatmap = go.Figure(go.Heatmap(
-            z=heatmap_data.values,
-            x=heatmap_data.columns,
-            y=heatmap_data.index,
-            colorscale='RdYlGn',
-            text=np.round(heatmap_data.values, 1),
-            texttemplate='%{text}',
-            textfont={"size": 14}
-        ))
-        
-        fig_heatmap.update_layout(
-            title="Opportunity Score Distribution",
-            height=400
-        )
-        st.plotly_chart(fig_heatmap, use_container_width=True)
+        fig_views.update_layout(xaxis_tickangle=-45)
+        st.plotly_chart(fig_views, use_container_width=True)
     
     with tab2:
-        # Top keywords bar chart
-        for category in metrics['category'].unique():
-            st.subheader(f"📌 {category} Category")
-            cat_data = metrics[metrics['category'] == category]
-            top_10 = cat_data.nlargest(10, 'opportunity_score')
-            
-            fig_bar = go.Figure(go.Bar(
-                x=top_10['keyword'],
-                y=top_10['opportunity_score'],
-                marker_color=COLOR_SCHEMES['category_colors'][category],
-                hovertemplate=(
-                    "<b>%{x}</b><br>" +
-                    "Opportunity Score: %{y:.1f}<br>" +
-                    "<extra></extra>"
-                )
-            ))
-            
-            fig_bar.update_layout(
-                height=400,
-                xaxis_tickangle=-45
-            )
-            st.plotly_chart(fig_bar, use_container_width=True)
-            
-            # Display metrics in a table
-            st.write("Detailed Metrics:")
-            metrics_df = top_10[['keyword', 'opportunity_score', 'demand_score', 
-                               'total_views', 'avg_engagement']].round(2)
-            metrics_df.columns = ['Keyword', 'Opportunity Score', 'Demand Score', 
-                                'Total Views', 'Avg Engagement (%)']
-            st.dataframe(metrics_df, hide_index=True)
-    
-    # 3. Strategic Insights
-    st.header("💡 Strategic Insights")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("Top Opportunities")
-        top_overall = metrics.nlargest(5, 'opportunity_score')
-        for _, row in top_overall.iterrows():
-            with st.expander(f"🎯 {row['keyword']}"):
-                st.write(f"**Category:** {row['category']}")
-                st.write(f"**Opportunity Score:** {row['opportunity_score']:.1f}/10")
-                st.write(f"**Demand Score:** {row['demand_score']:.1f}/10")
-                st.write(f"**Total Views:** {row['total_views']:,.0f}")
-                st.write(f"**Engagement Rate:** {row['avg_engagement']:.2f}%")
-    
-    with col2:
-        st.subheader("Category Performance")
-        cat_metrics = metrics.groupby('category').agg({
-            'opportunity_score': ['mean', 'std'],
-            'demand_score': 'mean',
-            'total_views': 'sum'
-        }).round(2)
-        
-        for category in cat_metrics.index:
-            with st.expander(f"📊 {category}"):
-                st.write(f"**Avg Opportunity Score:** {cat_metrics.loc[category, ('opportunity_score', 'mean')]:.1f}/10")
-                st.write(f"**Score Variation:** ±{cat_metrics.loc[category, ('opportunity_score', 'std')]:.1f}")
-                st.write(f"**Avg Demand Score:** {cat_metrics.loc[category, ('demand_score', 'mean')]:.1f}/10")
-                st.write(f"**Total Views:** {cat_metrics.loc[category, ('total_views', 'sum')]:,.0f}")
-
-# Results Analysis Page
-elif page == "Results":
-    st.title("📊 Key Findings and Results")
-    
-    # 1. Category Performance Overview
-    st.header("1. Category Performance Overview")
-    
-    # Create metrics data
-    category_metrics = {
-        'Modern': {'views': '3.2M', 'engagement': '5.6%'},
-        'Current': {'views': '2.8M', 'engagement': '4.3%'},
-        'Old': {'views': '1.9M', 'engagement': '3.2%'}
-    }
-    
-    # Display metrics in columns
-    cols = st.columns(3)
-    for idx, (category, metrics) in enumerate(category_metrics.items()):
-        with cols[idx]:
-            st.markdown(f"### {category}")
-            st.metric("Total Views", metrics['views'])
-            st.metric("Engagement Rate", metrics['engagement'])
-    
-    # 2. Demand Score Analysis
-    st.header("2. Demand Score Analysis")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # Calculate demand scores
-        demand_metrics = df.groupby('category').agg({
-            'view_count': 'mean',
-            'engagement_rate': 'mean'
-        }).reset_index()
-        
-        # Normalize and calculate demand score
-        demand_metrics['normalized_views'] = demand_metrics['view_count'] / demand_metrics['view_count'].mean()
-        demand_metrics['normalized_engagement'] = demand_metrics['engagement_rate'] / demand_metrics['engagement_rate'].mean()
-        demand_metrics['demand_score'] = (
-            demand_metrics['normalized_views'] * 0.6 + 
-            demand_metrics['normalized_engagement'] * 0.4
-        )
-        
-        fig_demand = px.bar(demand_metrics, 
-                          x='category', 
-                          y='demand_score',
-                          color='category',
-                          color_discrete_map=COLOR_SCHEMES['category_colors'],
-                          title="Demand Score by Category")
-        st.plotly_chart(fig_demand, use_container_width=True)
-    
-    with col2:
         # Top keywords by engagement
-        top_keywords = df.groupby('keyword').agg({
-            'view_count': 'sum',
-            'engagement_rate': 'mean'
+        top_by_engagement = df.groupby('keyword').agg({
+        'engagement_rate': 'mean',
+            'category': 'first',
+            'view_count': 'sum'
         }).nlargest(10, 'engagement_rate').reset_index()
         
-        fig_keywords = px.scatter(top_keywords,
-                                x='view_count',
-                                y='engagement_rate',
-                                text='keyword',
-                                title="Top Keywords by Engagement",
-                                labels={'view_count': 'Total Views',
-                                       'engagement_rate': 'Engagement Rate (%)'},
-                                size='view_count')
-        fig_keywords.update_traces(textposition='top center')
-        st.plotly_chart(fig_keywords, use_container_width=True)
+        fig_engagement = px.scatter(
+            top_by_engagement,
+            x='view_count',
+            y='engagement_rate',
+            color='category',
+            size='view_count',
+            text='keyword',
+            color_discrete_map=COLOR_SCHEMES['category_colors'],
+            title="Top 10 Keywords by Engagement Rate",
+            labels={
+                'view_count': 'Total Views',
+                'engagement_rate': 'Engagement Rate (%)',
+                'keyword': 'Keyword'
+            }
+        )
+        fig_engagement.update_traces(textposition='top center')
+        st.plotly_chart(fig_engagement, use_container_width=True)
     
-    # 3. Content Opportunity Analysis
-    st.header("3. Content Opportunity Analysis")
+    with tab3:
+        # Keywords with growth potential
+        df['year'] = pd.to_datetime(df['published_date']).dt.year
+        yearly_growth = df.groupby(['keyword', 'year']).agg({
+            'view_count': 'sum',
+            'category': 'first'
+    }).reset_index()
+        
+        # Calculate year-over-year growth
+        growth_rate = yearly_growth.pivot(
+            index='keyword',
+            columns='year',
+            values='view_count'
+        ).pct_change(axis=1).mean(axis=1)
+        
+        top_growth = growth_rate.nlargest(10).reset_index()
+        top_growth['growth_rate'] = top_growth[0] * 100
+        
+        fig_growth = px.bar(
+            top_growth,
+            x='keyword',
+            y='growth_rate',
+            title="Top 10 Keywords by Growth Rate",
+            labels={
+                'growth_rate': 'Average YoY Growth Rate (%)',
+                'keyword': 'Keyword'
+            }
+        )
+        fig_growth.update_layout(xaxis_tickangle=-45)
+        st.plotly_chart(fig_growth, use_container_width=True)
     
-    # Calculate opportunity scores
-    opportunity_metrics = df.groupby(['category', 'keyword']).agg({
-        'view_count': ['sum', 'count'],
-        'engagement_rate': 'mean'
+    # Advanced Keyword Search and Analysis
+    st.header("🔎 Advanced Keyword Analysis")
+    
+    # Search Interface
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        search_keyword = st.text_input(
+            "Search for a keyword",
+            placeholder="Enter a keyword (e.g., 'CRISPR', 'breeding', etc.)"
+        )
+    
+    with col2:
+        search_category = st.selectbox(
+            "Filter by category",
+            ["All Categories"] + sorted(df['category'].unique().tolist())
+        )
+    
+    # Additional filters in expandable section
+    with st.expander("Advanced Filters"):
+        col1, col2 = st.columns(2)
+        with col1:
+            min_views = st.number_input(
+                "Minimum Views",
+                min_value=0,
+                value=0
+            )
+            min_engagement = st.number_input(
+                "Minimum Engagement Rate (%)",
+                min_value=0.0,
+                value=0.0
+            )
+        with col2:
+            date_range = st.date_input(
+                "Date Range",
+                value=(df['published_date'].min(), df['published_date'].max())
+            )
+    
+    # Apply filters
+    if search_keyword or search_category != "All Categories":
+        filtered_df = df.copy()
+        
+        if search_keyword:
+            filtered_df = filtered_df[
+                filtered_df['keyword'].str.contains(search_keyword, case=False)
+            ]
+        
+        if search_category != "All Categories":
+            filtered_df = filtered_df[filtered_df['category'] == search_category]
+        
+        if min_views > 0:
+            filtered_df = filtered_df[filtered_df['view_count'] >= min_views]
+        
+        if min_engagement > 0:
+            filtered_df = filtered_df[
+                filtered_df['engagement_rate'] >= min_engagement
+            ]
+        
+        filtered_df = filtered_df[
+            (filtered_df['published_date'].dt.date >= date_range[0]) &
+            (filtered_df['published_date'].dt.date <= date_range[1])
+        ]
+        
+        if not filtered_df.empty:
+            # Keyword Performance Metrics
+            st.subheader("📈 Keyword Performance Metrics")
+            
+            metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
+            
+            with metric_col1:
+                st.metric(
+                    "Total Videos",
+                    len(filtered_df),
+                    help="Number of videos found"
+                )
+            
+            with metric_col2:
+                st.metric(
+                    "Total Views",
+                    f"{filtered_df['view_count'].sum():,.0f}",
+                    help="Total views across all videos"
+                )
+            
+            with metric_col3:
+                st.metric(
+                    "Avg. Engagement Rate",
+                    f"{filtered_df['engagement_rate'].mean():.2f}%",
+                    help="Average engagement rate"
+                )
+            
+            with metric_col4:
+                st.metric(
+                    "Avg. Video Duration",
+                    f"{filtered_df['duration_seconds'].mean()/60:.1f} min",
+                    help="Average video length"
+                )
+            
+            # Temporal Analysis
+            st.subheader("📅 Temporal Analysis")
+            
+            # Views over time
+            fig_timeline = px.line(
+                filtered_df.groupby('published_date')['view_count'].sum().reset_index(),
+                x='published_date',
+                y='view_count',
+                title="Views Distribution Over Time",
+                labels={
+                    'published_date': 'Publication Date',
+                    'view_count': 'Total Views'
+                }
+            )
+            st.plotly_chart(fig_timeline, use_container_width=True)
+            
+            # Detailed Results
+            st.subheader("📋 Detailed Results")
+            
+            # Show detailed table with main metrics
+            results_df = filtered_df[[
+                'keyword', 'category', 'published_date', 'view_count',
+                'like_count', 'comment_count', 'engagement_rate'
+            ]].sort_values('view_count', ascending=False)
+            
+            st.dataframe(
+                results_df.style.format({
+                    'view_count': '{:,.0f}',
+                    'like_count': '{:,.0f}',
+                    'comment_count': '{:,.0f}',
+                    'engagement_rate': '{:.2f}%'
+                }),
+                use_container_width=True
+            )
+        else:
+            st.markdown("""
+            <div style='background-color: #4ECDC4; color: white; padding: 1rem; border-radius: 10px; border: 2px solid #45B7D1; text-align: center;'>
+                🔍 Enter a keyword or select a category to see detailed analysis
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style='background-color: #4ECDC4; color: white; padding: 1rem; border-radius: 10px; border: 2px solid #45B7D1; text-align: center;'>
+            🔍 Enter a keyword or select a category to see detailed analysis
+        </div>
+        """, unsafe_allow_html=True)
+
+# Opportunity Analysis Page
+elif page == "Opportunity Analysis":
+    st.title("🎯 Content Opportunity Analysis")
+    
+    st.markdown("""
+    This analysis combines demand and supply metrics to identify the most promising content opportunities 
+    in plant breeding education on YouTube.
+    """)
+    
+    # Calculate opportunity and demand metrics
+    metrics = df.groupby(['category', 'keyword']).agg({
+        'view_count': ['sum', 'count', 'mean'],
+        'engagement_rate': 'mean',
+        'like_count': 'sum',
+        'comment_count': 'sum'
     }).reset_index()
     
-    opportunity_metrics.columns = ['category', 'keyword', 'total_views', 'video_count', 'avg_engagement']
+    # Flatten column names
+    metrics.columns = ['category', 'keyword', 'total_views', 'video_count', 'avg_views', 'avg_engagement', 'total_likes', 'total_comments']
     
-    # Calculate demand and supply scores
-    opportunity_metrics['demand_score'] = (
-        (opportunity_metrics['total_views'] / opportunity_metrics['total_views'].mean()) * 0.6 +
-        (opportunity_metrics['avg_engagement'] / opportunity_metrics['avg_engagement'].mean()) * 0.4
+    # Calculate normalized metrics
+    metrics['normalized_views'] = (metrics['total_views'] - metrics['total_views'].min()) / (metrics['total_views'].max() - metrics['total_views'].min())
+    metrics['normalized_engagement'] = (metrics['avg_engagement'] - metrics['avg_engagement'].min()) / (metrics['avg_engagement'].max() - metrics['avg_engagement'].min())
+    
+    # Calculate opportunity and demand scores
+    metrics['opportunity_score'] = (
+        (0.5 * metrics['normalized_views']) + 
+        (0.5 * (metrics['avg_engagement'] / metrics['avg_engagement'].max()))
+    ) * 10
+    
+    metrics['demand_score'] = (
+        (0.5 * metrics['normalized_views']) + 
+        (0.5 * (metrics['avg_engagement'] / metrics['avg_engagement'].max()))
+    ) * 10
+    
+    # 1. Overall Opportunity Landscape
+    st.header("📊 Opportunity Landscape")
+    
+    # Create opportunity vs demand matrix
+    fig_matrix = px.scatter(
+        metrics,
+        x='opportunity_score',
+        y='demand_score',
+        size='total_views',
+        color='category',
+        hover_data={
+            'keyword': True,
+            'total_views': ':,.0f',
+            'avg_engagement': ':.2f%',
+            'video_count': True
+        },
+        color_discrete_map=COLOR_SCHEMES['category_colors'],
+        title="Content Opportunity vs Demand Matrix",
+        labels={
+            'opportunity_score': 'Opportunity Score (0-10)',
+            'demand_score': 'Demand Score (0-10)',
+            'total_views': 'Total Views'
+        }
     )
     
-    opportunity_metrics['supply_score'] = opportunity_metrics['video_count'] / opportunity_metrics['video_count'].mean()
-    opportunity_metrics['opportunity_score'] = opportunity_metrics['demand_score'] / opportunity_metrics['supply_score']
+    # Add quadrant lines
+    fig_matrix.add_hline(y=metrics['demand_score'].median(), line_dash="dash", line_color="gray", opacity=0.5)
+    fig_matrix.add_vline(x=metrics['opportunity_score'].median(), line_dash="dash", line_color="gray", opacity=0.5)
+    
+    # Add quadrant labels
+    fig_matrix.add_annotation(x=8, y=8, text="High Opportunity, High Demand", showarrow=False, font=dict(size=10))
+    fig_matrix.add_annotation(x=8, y=2, text="High Opportunity, Low Demand", showarrow=False, font=dict(size=10))
+    fig_matrix.add_annotation(x=2, y=8, text="Low Opportunity, High Demand", showarrow=False, font=dict(size=10))
+    fig_matrix.add_annotation(x=2, y=2, text="Low Opportunity, Low Demand", showarrow=False, font=dict(size=10))
+    
+    fig_matrix.update_layout(
+        height=600,
+        xaxis_title="Opportunity Score (Higher = More Potential)",
+        yaxis_title="Demand Score (Higher = More Interest)",
+        showlegend=True
+    )
+    st.plotly_chart(fig_matrix, use_container_width=True)
+    
+    # Add explanation
+    st.markdown("""
+    **Matrix Quadrants Explanation:**
+    - **Top Right:** High opportunity keywords with strong demand - prime targets for content creation
+    - **Top Left:** High demand but lower opportunity - consider ways to differentiate content
+    - **Bottom Right:** High opportunity but lower demand - potential for early mover advantage
+    - **Bottom Left:** Lower priority keywords for content creation
+    """)
+
+    # 2. Category-wise Analysis
+    st.header("📈 Category Performance")
+    
+    # Create tabs for different views
+    tab1, tab2 = st.tabs(["Opportunity Scores", "Demand Analysis"])
+    
+    with tab1:
+        # Category-wise opportunity scores
+        cat_opportunity = metrics.groupby('category').agg({
+            'opportunity_score': ['mean', 'max', 'min'],
+            'total_views': 'sum',
+            'video_count': 'sum'
+        }).round(2)
+        
+        for category in cat_opportunity.index:
+            with st.expander(f"📊 {category} Category Analysis"):
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.metric(
+                        "Average Opportunity Score",
+                        f"{cat_opportunity.loc[category, ('opportunity_score', 'mean')]:.1f}/10",
+                        help="Average opportunity score for this category"
+                    )
+                    st.metric(
+                        "Total Views",
+                        f"{cat_opportunity.loc[category, ('total_views', 'sum')]:,.0f}",
+                        help="Total views in this category"
+                    )
+                
+                with col2:
+                    st.metric(
+                        "Score Range",
+                        f"{cat_opportunity.loc[category, ('opportunity_score', 'min')]:.1f} - {cat_opportunity.loc[category, ('opportunity_score', 'max')]:.1f}",
+                        help="Range of opportunity scores in this category"
+                    )
+                    st.metric(
+                        "Total Videos",
+                        f"{cat_opportunity.loc[category, ('video_count', 'sum')]:,.0f}",
+                        help="Number of videos in this category"
+                    )
+    
+    with tab2:
+        # Demand score distribution
+        fig_demand = px.box(
+            metrics,
+            x='category',
+            y='demand_score',
+            color='category',
+            color_discrete_map=COLOR_SCHEMES['category_colors'],
+            title="Demand Score Distribution by Category",
+            points="all"
+        )
+        st.plotly_chart(fig_demand, use_container_width=True)
+    
+    # 3. Top Opportunities
+    st.header("🎯 Top Content Opportunities")
+    
+    # Filter options
+    col1, col2 = st.columns(2)
+    with col1:
+        selected_category = st.selectbox(
+            "Select Category",
+            ["All Categories"] + sorted(metrics['category'].unique().tolist())
+        )
+    with col2:
+        sort_by = st.selectbox(
+            "Sort By",
+            ["Opportunity Score", "Demand Score", "Total Views", "Engagement Rate"]
+        )
+    
+    # Filter and sort data
+    if selected_category != "All Categories":
+        display_metrics = metrics[metrics['category'] == selected_category]
+    else:
+        display_metrics = metrics
+    
+    sort_columns = {
+        "Opportunity Score": "opportunity_score",
+        "Demand Score": "demand_score",
+        "Total Views": "total_views",
+        "Engagement Rate": "avg_engagement"
+    }
+    
+    display_metrics = display_metrics.nlargest(10, sort_columns[sort_by])
     
     # Display top opportunities
-    st.subheader("Top Content Opportunities")
-    top_opportunities = opportunity_metrics.nlargest(10, 'opportunity_score')
-    
-    fig_opportunities = px.scatter(top_opportunities,
-                                 x='demand_score',
-                                 y='supply_score',
-                                 color='category',
-                                 size='opportunity_score',
-                                 text='keyword',
-                                 color_discrete_map=COLOR_SCHEMES['category_colors'],
-                                 title="Top 10 Content Opportunities",
-                                 labels={'demand_score': 'Demand Score',
-                                       'supply_score': 'Supply Score'})
-    
-    fig_opportunities.update_traces(textposition='top center')
-    st.plotly_chart(fig_opportunities, use_container_width=True)
-    
-    # 4. Key Recommendations
-    st.header("4. Key Recommendations")
-    
-    recommendations = [
-        {
-            "title": "Focus on Modern Topics",
-            "description": "Prioritize content creation for modern topics like CRISPR and AI-based genomic selection, which show highest engagement rates."
-        },
-        {
-            "title": "Balance Content Distribution",
-            "description": "While modern topics lead in engagement, maintain coverage of traditional methods which show steady interest."
-        },
-        {
-            "title": "Target High-Opportunity Keywords",
-            "description": "Focus on keywords with high demand but low competition for maximum impact."
-        },
-        {
-            "title": "Optimize Content Strategy",
-            "description": "Use engaging visuals and simplified explanations for complex topics to increase accessibility."
-        }
-    ]
-    
-    cols = st.columns(2)
-    for idx, rec in enumerate(recommendations):
-        with cols[idx % 2]:
+    for idx, row in display_metrics.iterrows():
+        with st.expander(f"🎯 {row['keyword']} ({row['category']})"):
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric(
+                    "Opportunity Score",
+                    f"{row['opportunity_score']:.1f}/10",
+                    help="Combined score of demand and engagement"
+                )
+            with col2:
+                st.metric(
+                    "Demand Score",
+                    f"{row['demand_score']:.1f}/10",
+                    help="Measure of audience interest"
+                )
+            with col3:
+                st.metric(
+                    "Engagement Rate",
+                    f"{row['avg_engagement']:.2f}%",
+                    help="Average engagement rate"
+                )
+            
             st.markdown(f"""
-            #### {rec['title']}
-            {rec['description']}
+            **Performance Metrics:**
+            - Total Views: {row['total_views']:,.0f}
+            - Total Videos: {row['video_count']}
+            - Average Views per Video: {row['avg_views']:,.0f}
+            - Total Likes: {row['total_likes']:,.0f}
+            - Total Comments: {row['total_comments']:,.0f}
             """)
+    
+    # 4. Strategic Recommendations
+    st.header("💡 Strategic Recommendations")
+    
+    recommendations = {
+        "High Opportunity Keywords": {
+            "description": "Keywords with high demand but relatively low competition",
+            "metrics": metrics[metrics['opportunity_score'] > metrics['opportunity_score'].quantile(0.75)]
+        },
+        "Emerging Topics": {
+            "description": "Topics showing strong growth potential",
+            "metrics": metrics[metrics['demand_score'] > metrics['demand_score'].quantile(0.75)]
+        },
+        "Underserved Categories": {
+            "description": "Categories with high demand but limited content",
+            "metrics": metrics[metrics['video_count'] < metrics['video_count'].quantile(0.25)]
+        }
+    }
+    
+    for rec_type, data in recommendations.items():
+        with st.expander(f"📌 {rec_type}"):
+            st.write(data["description"])
+            st.dataframe(
+                data["metrics"][['keyword', 'category', 'opportunity_score', 'demand_score', 'total_views', 'avg_engagement']]
+                .sort_values('opportunity_score', ascending=False)
+                .head(5)
+                .style.format({
+                    'opportunity_score': '{:.1f}',
+                    'demand_score': '{:.1f}',
+                    'total_views': '{:,.0f}',
+                    'avg_engagement': '{:.2f}%'
+                })
+            )
 
-# Footer with enhanced styling
+# Code References Page
+elif page == "Code References":
+    st.title("📚 Code References & Inspiration")
+    
+    st.markdown("""
+    This dashboard's code was inspired by and adapted from various sources. We believe in giving credit 
+    where it's due and encouraging learning from the community.
+    """)
+    
+    # Opportunity Analysis Matrix
+    with st.expander("🎯 Opportunity Analysis Matrix", expanded=True):
+        st.markdown("""
+        ### Matrix Visualization and Analysis
+        - [Plotly Quadrant Chart Tutorial](https://plotly.com/python/v3/ipython-notebooks/scoreboard-heatmaps/)
+        - [Streamlit Plotly Guide](https://docs.streamlit.io/library/api-reference/charts/st.plotly_chart)
+        - [YT MetricsAnalysis](https://keywordseverywhere.com/)
+        - [Opportunity Score](https://medium.com/uxr-microsoft/what-is-the-opportunity-score-and-how-to-calculate-it-part-ii-59bbadbdd2ad/)
+                    
+        """)
+    
+    # Data Processing & Metrics
+    with st.expander("📊 Data Processing & Metrics", expanded=True):
+        st.markdown("""
+        ### API and Data Handling
+        - [YouTube Data API Documentation](https://developers.google.com/youtube/v3/docs)
+        - [Pandas Pivot Table Guide](https://pandas.pydata.org/docs/reference/api/pandas.pivot_table.html)
+        - [Storyly: Engagement Rate Calculation](https://www.storyly.io/post/how-to-calculate-engagement-rate)
+        
+        These resources were crucial in developing our data collection and processing pipeline, 
+        especially in handling YouTube API data efficiently.
+        """)
+    
+    # Dashboard Design
+    with st.expander("🎨 Dashboard Design", expanded=True):
+        st.markdown("""
+        ### UI/UX Framework
+        - [Streamlit Documentation](https://docs.streamlit.io/)
+        - [Streamlit Components Gallery](https://streamlit.io/components)
+        - [Streamlit Layout Guide](https://docs.streamlit.io/library/api-reference/layout)
+        
+        The dashboard's user interface was built using Streamlit, with inspiration from these official 
+        resources and community examples.
+        """)
+    
+    # Visualization Techniques
+    with st.expander("📈 Visualization Techniques", expanded=True):
+        st.markdown("""
+        ### Interactive Visualizations
+        - [Plotly Express Documentation](https://plotly.com/python/plotly-express/)
+        - [Plotly Graph Objects](https://plotly.com/python/graph-objects/)
+        - [Streamlit Metrics Guide](https://docs.streamlit.io/library/api-reference/data/st.metric)
+        
+        Our interactive charts and visualizations were created using Plotly, following best practices 
+        from these documentation sources.
+        """)
+    
+    # Style & UI/UX
+    with st.expander("🎭 Style & UI/UX", expanded=True):
+        st.markdown("""
+        ### Visual Design
+        - [Streamlit Custom Themes](https://docs.streamlit.io/library/advanced-features/theming)
+        - [Streamlit CSS Guide](https://docs.streamlit.io/library/api-reference/style)
+        - [Material Design Color System](https://material.io/design/color/the-color-system.html)
+        
+        The dashboard's visual style was influenced by Material Design principles and implemented using 
+        Streamlit's theming capabilities.
+        """)
+    
+    # Additional Resources
+    with st.expander("📚 Additional Resources", expanded=True):
+        st.markdown("""
+        ### API and Data Management
+        - [Real Python: API Integration](https://realpython.com/api-integration-in-python/)
+        - [Python Code: YouTube API Tutorial](https://thepythoncode.com/article/using-youtube-api-in-python)
+        - [Peer DH: API Request Quotas](https://peerdh.com/blogs/programming-insights/managing-api-request-quotas-in-python)
+        
+        These additional resources provided valuable insights into API integration and data management 
+        best practices.
+        """)
+    
+    # Acknowledgment Note
+    st.markdown("""
+    ---
+    ### 🙏 Acknowledgments
+    
+    We extend our gratitude to all the creators and maintainers of these resources. Their work has been 
+    instrumental in building this dashboard and making complex data analysis more accessible.
+    
+    If you're interested in learning more about any specific aspect of this project, we encourage you to 
+    explore these references.
+    """)
+
+# Footer
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666;'>

@@ -1,19 +1,70 @@
 # YouTube Data Analysis Project
-This project is an analysis of YouTube (Global) data to understand the trends of plant breeding related **8,971 videos** with **2.1 billion views** for **198 keywords** in **3 categories of concepts** (Old, Current, Modern) (**English** language only).
+This project is an analysis of YouTube (Global) data to understand the trends of plant breeding related **8,971 videos** with **2.1 billion views** for **198 keywords** in **3 categories of concepts** (Old, Current, Modern) (**English** language only). You can see the results with the help of a dashboard after running the script.
+
+## Project Setup
+### 1. Clone the repository:
+```bash
+git clone git@github.com:nfornadimkhan/data_analysis_youtube.git
+cd data_analysis_youtube
+```
+
+### 2. Install required packages
+```bash
+pip install -r requirements.txt
+```   
+
+### 3. Run the Application
+```bash
+streamlit run dashboard.py
+```
+
+## To run a fresh analysis setup the API Configuration
+Get a YouTube Data API key from the [Google Cloud Console](https://console.cloud.google.com/)
+Set up environment variables:
+   - Copy `.env.example` to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Edit `.env` and add your YouTube API key:
+     ```
+     YOUTUBE_API_KEY=your_actual_api_key_here
+     ```
+
+## Project Structure
+├── README.md
+├── requirements.txt
+├── analysis.ipynb
+├── .env.example
+├── .env # (git-ignored)
+├── .gitignore
+├── youtube_data_fetcher.py
+├── dashboard.py
+├── pre-commit (pre-commit hook to check for API keys in the code - a security measure)
+├── youtube_data/contains all the data fetched from YouTube in .csv format.
+├── fetch_state.json
+
+## API Choice
+- YouTube is a powerful platform and it is the second largest search engine after Google worldwide.
+- It has quota limit of 10,000 units per day which can be used free of cost.
+- As this API requires registration, we have saved all the retrieved data in the youtube_data/all_videos_data.csv file. 
+- We have also saved the state of the data fetching in the fetch_state.json file to track the progress of the script each time it is run which ensures that we don't fetch the same data multiple times. And also to avoid the quota limit.
 
 ## Problem Statement
-There are many SEO tools available to analyze the trends of keywords. But not efficient to analyze the trends on broader horizon with simultaneous analysis of multiple categories of keywords with interaction of audience. 
-I want to analyze the trends on broader horizon utilizing the knowledge of Python and YouTube Data API. As a student of Crop Science (Plant Breeding and Seed Science) together with my group memeber, Samaneh Javidian, we wanted to analyze following things:
-   1. Understanding the trends on broader horizon and impact of plant breeding research overtime, 
-   2. Analyzing how the audience on YouTube interact with plant breeding related videos as per 3 categories of concepts.
-   3. Analyzing the content gap in plant breeding related videos. 
-   4. Identifying emerging topics and assessing future directions in plant breeding research.
+- We want to start a YouTube channel focusing on concepts related to plant breeding. There are many SEO tools available to analyze the trends of keywords. They just focus on the keyword search volume or basic trends. But they are not efficient to analyze the trends on broader horizon with simultaneous analysis of multiple categories of keywords with interaction of audience (like likes, comments, etc.). 
+- We want to analyze the trends on broader horizon utilizing the knowledge of Python and APIs. Therefore we chose YouTube API as YouTube hosts a large amount of educational or documentary-style videos, from research institutions, universities, individual experts, and even farmers sharing experiences. This diversity of video content makes YouTube a perfect platform for collecting data on how plant breeding concepts are being taught, discussed, and popularized.
+
+## Objectives
+As a student of Crop Science (Plant Breeding and Seed Science) together with my group memeber, Samaneh Javidian, we wanted to analyze following things:
+   1. Is it a good idea to start a YouTube channel focusing on plant breeding concepts? Are people really interested in plant breeding related concepts?
+   2. On what kind of topics should we start to get more engagement with higher views? Should we start with the old or current or modern concepts?
+   3. Identify relevant keywords for plant breeding concepts.
+   4. What is the best time to publish the videos to get more engagement?
 
 ## Methodology
 - Collect data from YouTube using the [YouTube API](https://developers.google.com/youtube/v3) based on specific plant breeding keywords.
 - Save the data categorized in **3 categories** in a structured format in csv file for further analysis. Following data is saved:
   - Keyword: 66 keywords in each category (total 66 x 3 = **198 keywords**).
-  - Category: Old, Current, Modern
+  - Category Wise: Old, Current, Modern
   - Video ID
   - Video Title
   - Published Date
@@ -23,17 +74,20 @@ I want to analyze the trends on broader horizon utilizing the knowledge of Pytho
   - Comment Count
 - Analyze the collected data to determine trends in viewership and engagement.
 
-## Technologies Used
-- **API and Data Handling:**
-  - YouTube Data API v3
-  - Python libraries: `pandas`, `numpy`, `
-- **Visualization and Analysis:**
-  - `matplotlib`, `seaborn`, `plotly`, `tabulate`
-- **Machine Learning and NLP:**
-  - `NLTK`, `BERT`
-- **Data Storage and Preprocessing:**
-  - CSV for structured data storage
-
+## Libraries Used
+- **pandas:** For data manipulation and analysis
+- **numpy:** For numerical operations
+- **matplotlib:** For creating static, interactive, and animated visualizations
+- **seaborn:** For creating statistical data visualizations
+- **plotly:** For creating interactive web-based visualizations
+- **nltk:** For natural language processing (e.g., tokenizing words in text).
+- **sentence-transformers:** For encoding sentences into vector representations using BERT.
+- **scikit-learn:** For machine learning algorithms and tools.
+- **google-api-python-client:** For handling YouTube Data API v3.
+- **python-dotenv:** For loading environment variables.
+- **isodate:** For parsing and manipulating dates and times.
+- **tabulate:** For creating tables.
+- **streamlit:** For creating interactive web applications (for visualization).
 
 ## Keyword Classification
 Here we try to use an analytical approach to classify keywords into 3 categories with the help of historical relevance, technological advancement, and future research trends in plant breeding.
@@ -270,33 +324,28 @@ Keywords in the Modern category highlight cutting-edge and emerging areas driven
 # Steps Followed
 ## Step 1: Data Collection
 - Get a YouTube Data API v3 key. This allowed us to programmatically access YouTube data.
-- Search Queries: Using above described keyword lists (keywords_old, keywords_current, keywords_modern) to construct search queries. It's crucial to refine these queries to be as specific as possible. For example, instead of just "Mass selection," try "mass selection in plant breeding" to get more relevant results. 
+- Using above described keyword lists (keywords_old, keywords_current, keywords_modern) to construct search queries. It's crucial to refine these queries to be as specific as possible. For example, instead of just "Mass selection," try "mass selection in plant breeding" to get more relevant results. 
+- We created a `youtube_data_fetcher.py` script to fetch the data for each keyword and store the data in the `youtube_data/all_videos_data.csv` file. 
+- The problem with YouTube Data API is that it has a search quota limit of `10000 per day`. Therefore, we have to run the script multiple times to get all the data. For this, we implemented a state file (fetch_state.json) to track the progress of the script each time it is run. Each time the script is run, it checks the state file to see if the data for the current keyword has already been fetched. If it has, it skips the keyword. If it hasn't, it fetches the data for the current keyword. This way, we can continue from where we left off and avoid fetching the same data multiple times. 
+- The `youtube_data_fetcher.py` script is run 3 times in total in 3 days to fetch the data for all the keywords in the `keywords.csv` file. So, keywords.csv file is given as input to the `youtube_data_fetcher.py` script to fetch the data for all the keywords one by one.
+- In this way, we fetched 50 videos for each keyword, which is 50 x 66 x 3 = **9900 videos**. 
+- **Why only 50 videos?** 🤔 Because more than this we find that we mostly get irrelevant videos. As we are analyzing education content, for which videos are not that much available on YouTube.
 
-The problem with YouTube Data API is that it has a search quota limit of `10000 per day`. Therefore, we have to run the script multiple times to get all the data. For this, we implemented a state file to track the progress of the script each time it is run. This file is stored in the youtube_data directory. Each time the script is run, it checks the state file to see if the data for the current keyword has already been fetched. If it has, it skips the keyword. If it hasn't, it fetches the data for the current keyword. This way, we can continue from where we left off and avoid fetching the same data multiple times. 
-
-In this way, we fetched 50 videos for each keyword, which is 50 x 66 x 3 = **9900 videos**. 
-Why only 50 videos? 🤔 Because more than this we find that we mostly get irrelevant videos. As we are analyzing education content, for which videos are not that much available on YouTube.
-
-Search request: 100 quota units
-Video details: 1 quota unit per video × 50 videos = 50 quota units
-Total per keyword: 100 + 50 = 150 quota units
-
-Max keywords = DAILY_QUOTA_LIMIT / quota_per_keyword
-Max keywords = 10000 / 150 ≈ 66 keywords per day
-
-Max videos = 66 × 50 = 3,300 videos per day
-Days needed = Total keywords / Max keywords per day
-Days needed = 198 / 66 = 3 days
+- **Search request: 100 quota units**
+- **Video details: 1 quota unit per video × 50 videos = 50 quota units**
+- **Total per keyword: 100 + 50 = 150 quota units**
+- **Max keywords = DAILY_QUOTA_LIMIT / quota_per_keyword**
+- **Max keywords = 10000 / 150 ≈ 66 keywords per day**
+- **Max videos = 66 × 50 = 3,300 videos per day**
+- **Days needed = Total keywords / Max keywords per day**
+- **Days needed = 198 / 66 = 3 days**
 
 Therefore, we need to run the script 3 times to get all the data related to all 198 keywords stated in the keywords.csv file and store the data in the youtube_data/all_videos_data.csv file.
-
-
-Used following resources to manage API request quotas:
+👉🏻 **Used following resources to manage API request quotas:**
 - https://thepythoncode.com/article/using-youtube-api-in-python
 - https://peerdh.com/blogs/programming-insights/managing-api-request-quotas-in-python?utm_source=chatgpt.com
 - https://www.youtube.com/watch?v=TIZRskDMyA4
 - https://realpython.com/api-integration-in-python/
-
 
 ## Step 2: Data Cleaning & Preprocessing
 - Remove duplicate entries to ensure data quality
@@ -307,28 +356,28 @@ Used following resources to manage API request quotas:
   - view_count: Number of views
   - like_count: Number of likes
   - comment_count: Number of comments
-- Added human-readable duration format for better interpretation
-- Removed extra whitespace and standardized titles
-- Created engagement rate metric: Formula: (likes + comments) / views * 100 As inspired from the [article](https://www.storyly.io/post/how-to-calculate-engagement-rate)
-- Removed rows with all missing values to ensure data quality
-- Sorted data by category and keyword for better analysis
-- Saved cleaned dataset for further analysis
+- Added human-readable duration format for better interpretation.
+- Removed extra whitespace and standardized titles.
+- Created engagement rate metric: **Formula:** [(likes + comments) / views] * 100. As inspired from the [article](https://www.storyly.io/post/how-to-calculate-engagement-rate)
+- Removed rows with all missing values to ensure data quality.
+- Sorted data by category and keyword for better analysis.
+- Saved cleaned dataset in `youtube_data/cleaned_videos_data.csv` for further analysis.
 
 ## Step 3: Solution for the problem of Irrelevant Videos
-We recognized that our data contains some videos that are not at all related to the plant breeding concepts even after the above mentioned data cleaning & preprocessing. This was a big trouble. 😞
+We recognized that our data contains some videos that are not at all related to the plant breeding concepts even after the above mentioned data cleaning & preprocessing. This was a big trouble. 😰
 This let us to look for the solutions beyong the scope of the project.
 Therefore, we implemented a solution to remove the irrelevant videos from our data by using the following libraries:
 - **nltk:** For natural language processing (e.g., tokenizing words in text).
 - **sentence-transformers:** For encoding sentences into vector representations using BERT.
 - **sklearn:** For calculating cosine similarity between vectors.
 
-Inspired by these sources:
+👉🏻 **Inspired by these sources:**
 - https://www.restack.io/p/similarity-search-answer-relevance-scores-cat-ai?utm_source=chatgpt.com
 - https://www.33rdsquare.com/four-of-the-easiest-and-most-effective-methods-of-keyword-extraction-from-a-single-text-using-python/?utm_source=chatgpt.com
 - https://www.analyticsvidhya.com/blog/2022/08/movies-recommendation-system-using-python/?utm_source=chatgpt.com
 
-To assess how relevant each video is to a given keyword and filter out irrelevant videos. The solution uses both basic text matching and advanced semantic similarity (cosine similarity) to calculate a “relevance score” for each video. 
-1.	Relevance Scoring:
+To assess how relevant each video is to a given keyword and filter out irrelevant videos. The solution uses both basic text matching and advanced semantic similarity (cosine similarity) to calculate a "relevance score" for each video. 
+1. **Relevance Scoring:**
 	-	Each video title is compared to its corresponding search keyword using:
 	   -	Direct Keyword Match: Checks if the keyword is present in the title.
 	   -	Word Overlap: Measures how many words in the title overlap with the keyword.
@@ -342,210 +391,180 @@ To assess how relevant each video is to a given keyword and filter out irrelevan
    -	The final relevance score combines the **base relevance score (60%)** and **semantic similarity score (40%)**.
 3.	Categorization:
 	-	Videos are categorized based on their relevance scores:
-	-	High: Scores ≥ 40 (as average relevance score of the data was near 40)
+	-	High: Scores ≥ 40 (As I found that the average relevance score of the data was near 36.75 and I found that the videos with scores above 40 were more relevant to the keyword)
 	-	Medium: Scores between 20 and 40 (half of average relevance score)
 	-	Low: Scores between 10 and 20 (quarter of average relevance score)
 	-	Not Relevant: Scores < 10 (This was found from the data that any video below this score was not relevant to the keyword at all)
 4.	Filter and Save:
-	-	Videos with relevance scores > 10 are considered relevant and saved to a new file.
+	-	Videos with relevance scores > 10 are considered relevant and saved to a new file `youtube_data/videos_with_relevance.csv`.
 
-## Step 4: Exploratory Data Analysis
-Following libraries are used for data analysis:
-- **pandas:** For data manipulation and analysis
-- **numpy:** For numerical operations
-- **matplotlib:** For creating static, interactive, and animated visualizations
-- **seaborn:** For creating statistical data visualizations
-- **plotly:** For creating interactive web-based visualizations
+## Step 4: Exploratory Data Analysis & Discussion
+### Broder Trends
+![Fig 1: Evolution of Breeding Content on YouTube (2008-2023)](./graphs/1.evolution-of-breeding-content.png)
 
-### Discussion on Results
-**Trend Analysis:**
-- Identified increasing interest in modern plant breeding techniques like CRISPR and AI-based genomic selection.
-- Observed consistent engagement with traditional topics, suggesting continued relevance.
+Overall, I took total 8,971 videos, plotted with histogram with category wise with top 10 keywords by video count in each category.
+From the above graph (fig 1), we can see that the total number of videos in all categories has increased over the last 15 years. This shows that their is a growing interest in plant breeding related content on YouTube as more and more people are interested in it. This is also supported by the fact that the engagement rate has increased over the years with an average of 1.45% engagement rate.
+So, broadly I can say that the interest in plant breeding related content on YouTube has increased over the years. 
+Also, the top 10 keywords by highest views and average engagement rate in all categories are given below:
 
-## Calculation of Demand Metrics
-The demand score is a measure of how much interest (or demand) there is for a keyword. It combines two metrics: average views and average engagement rate. These metrics are weighted to prioritize their relative importance.
+#### Top 10 Keywords in all categories
+| Rank | Breeding Technique | Category | Total Views | Avg Views | Avg Engagement Rate |
+|------|-------------------|----------|-------------|-----------|-------------------|
+| 1 | Propagation techniques | Old | 327,306,877 | 7,438,793 | 1.92% |
+| 2 | Indigenous breeding methods | Old | 165,438,677 | 3,676,415 | 2.12% |
+| 3 | Historical agronomic practices | Old | 163,693,702 | 3,558,559 | 2.93% |
+| 4 | Hybridization techniques | Old | 158,570,248 | 3,303,547 | 2.81% |
+| 5 | Controlled hybrid seed production | Current | 122,766,615 | 2,668,839 | 1.93% |
+| 6 | Geographic adaptation | Old | 104,183,031 | 2,315,178 | 1.98% |
+| 7 | Cross-pollination techniques | Old | 87,808,658 | 1,868,269 | 1.82% |
+| 8 | Manual self-pollination techniques | Old | 86,984,982 | 1,775,204 | 2.04% |
+| 9 | Composite crossing | Old | 83,758,398 | 1,782,094 | 3.57% |
+| 10 | Open pollination | Old | 77,275,557 | 1,679,903 | 3.55% |
+
+#### Modern Category Top Keywords
+
+| Rank | Breeding Technique | Total Views | Avg Views | Avg Engagement Rate |
+|------|-------------------|-------------|-----------|-------------------|
+| 1 | Precision agriculture technologies | 72,452,791 | 1,958,184 | 1.71% |
+| 2 | Quantum computing | 56,678,185 | 1,416,955 | 2.85% |
+| 3 | Holistic systems breeding | 51,313,870 | 1,315,740 | 2.15% |
+| 4 | CRISPR gene editing | 33,908,633 | 721,460 | 2.62% |
+| 5 | Urban crop development | 29,123,486 | 606,739 | 2.64% |
+| 6 | Synthetic biology | 28,450,613 | 646,605 | 3.04% |
+| 7 | Non-coding RNA studies | 23,744,515 | 527,656 | 1.91% |
+| 8 | Transgenic development | 21,882,817 | 446,588 | 1.83% |
+| 9 | Biodegradable agro-inputs breeding | 18,196,121 | 387,152 | 1.77% |
+| 10 | Genome editing techniques | 15,938,897 | 325,284 | 2.27% |
+
+#### Current Category Top Keywords
+
+| Rank | Breeding Technique | Total Views | Avg Views | Avg Engagement Rate |
+|------|-------------------|-------------|-----------|-------------------|
+| 1 | Controlled hybrid seed production | 122,766,615 | 2,668,839 | 1.93% |
+| 2 | Breeding for micronutrient density | 25,799,205 | 586,346 | 2.45% |
+| 3 | Reproductive biology | 23,705,671 | 504,376 | 2.58% |
+| 4 | Controlled pollination | 16,511,925 | 351,318 | 2.21% |
+| 5 | Epistasis analysis | 4,202,240 | 93,383 | 2.17% |
+| 6 | Controlled environment breeding | 2,719,864 | 64,759 | 2.82% |
+| 7 | Progeny testing | 2,056,501 | 42,844 | 3.08% |
+| 8 | AFLP marker systems | 1,425,460 | 30,988 | 2.47% |
+| 9 | Isozyme markers | 1,344,786 | 27,445 | 1.98% |
+| 10 | Genetic uniformity | 1,085,099 | 25,235 | 1.76% |
+
+#### Old Category Top Keywords
+
+| Rank | Breeding Technique | Total Views | Avg Views | Avg Engagement Rate |
+|------|-------------------|-------------|-----------|-------------------|
+| 1 | Propagation techniques | 327,306,877 | 7,438,793 | 1.92% |
+| 2 | Indigenous breeding methods | 165,438,677 | 3,676,415 | 2.12% |
+| 3 | Historical agronomic practices | 163,693,702 | 3,558,559 | 2.93% |
+| 4 | Hybridization techniques | 158,570,248 | 3,303,547 | 2.81% |
+| 5 | Geographic adaptation | 104,183,031 | 2,315,178 | 1.98% |
+| 6 | Cross-pollination techniques | 87,808,658 | 1,868,269 | 1.82% |
+| 7 | Manual self-pollination techniques | 86,984,982 | 1,775,204 | 2.04% |
+| 8 | Composite crossing | 83,758,398 | 1,782,094 | 3.57% |
+| 9 | Open pollination | 77,275,557 | 1,679,903 | 3.55% |
+| 10 | Subsistence crop breeding | 72,017,078 | 1,532,278 | 1.80% |
+
+### Engagement Analysis
+![](./graphs/2.vplot-1.png)
+![](./graphs/3.vplot-2.png)
+![](./graphs/4.vplot-3.png)
+![Fig 2: Engagement Analysis](./graphs/5.vplot-4.png)
+
+In the Old category, the videos had higher median views (909.50), meaning most videos were watched more often compared to newer categories. The mean views were extremely high (476,292.65) because some videos went viral, reaching up to 117 million views. Similarly, the likes had a higher median (15), but some videos got millions of likes, making the average (mean) much larger (9,181.28). However, comments were generally very low (median 0), meaning most videos didn’t receive much discussion. The engagement rate (interaction by likes/comments per view) was around 1.84 on average, which is quite steady.
+
+In the Modern category, videos had lower median views (487.50) and median likes (7), showing reduced popularity on average. The highest views were around 61 million, but fewer viral hits made the mean views lower (200,511.95). Comments were still rare (median 0), and the engagement rate dropped slightly to 1.73, but it stayed consistent overall.
+
+For the Current category, the trends remained similar: median views (791.00) and median likes (12) were slightly better than Modern, but the mean values (72,754.74 for views and 957.30 for likes) were much lower due to fewer viral videos. Comments were again minimal (median 0), and the engagement rate was steady at 1.81.
+
+👉🏻 **Therefore, Older videos had more significant reach and engagement due to viral content, while newer videos show steady but more modest performance overall. The engagement rate stayed relatively stable across all categories, suggesting consistent interaction patterns.**
+
+### Publishing Time Analysis
+![Fig 3: Publishing Time Analysis](./graphs/6.publishing_time_analysis.png)
+As per this analysis it is clearly visible that Saturday and Sunday are the best days for publishing, with the highest engagement rates at 3.22% on Sunday and 3.05% on Saturday. 
+The most optimal time slots include Saturday at 22:00 (6.86% engagement with only 10 videos, making it less competitive) and Sunday at 18:00 (6.71% engagement with 24 videos). 
+Additionally, Saturday at 06:00 has a strong engagement rate (5.58%) and impressive average views (764,234), while Sunday at 14:00 sees lower engagement (4.18%) but the highest average views (3,192,022). Publishing during these time slots can maximize both visibility and audience interaction due to high engagement and relatively low competition.
+
+### Calculation of Opportunity and Demand Metrics
+In the last step, we calculated the opportunity and demand scores for each keyword to find the content gap on the YouTube platform. 
+
+1. **Opportunity Score**
+- The opportunity score identifies keywords with high demand and identify less saturated keywords. 
+- We have used normalized views and engagement per video to calculate the opportunity score.
+- The opportunity score is calculated as the sum of normalized views and engagement per video.
+- We have given 50% weightage to normalized views and 50% weightage to engagement per video.
+- The formula used for the opportunity score is:
+  - Opportunity Score = (0.5 × normalized views) + (0.5 × (engagement per video / maximum engagement per video)) × 10
 
 ```python
-keyword_metrics['demand_score'] = (
-    (keyword_metrics['avg_views'] / keyword_metrics['avg_views'].mean()) * 0.6 +
-    (keyword_metrics['avg_engagement'] / keyword_metrics['avg_engagement'].mean()) * 0.4
-)
+ metrics['opportunity_score'] = (
+        0.5 * metrics['normalized_views'] +
+        0.5 * (metrics['engagement_per_video'] / metrics['engagement_per_video'].max())
+    ) * 10
 ```
+2. **Demand Score**
+- The demand score identifies keywords with high demand and low competition. 
+- We have used normalized views and interaction rate to calculate the demand score.
+- The demand score is calculated as the sum of normalized views and interaction rate.
+- We have given 50% weightage to normalized views and 50% weightage to interaction rate.
+- The formula used for the demand score is:
+  - Demand Score = (0.5 × normalized views) + (0.5 × (interaction rate / maximum interaction rate)) × 10
 
-### Components:
-
-- avg_views: The mean number of views for videos associated with the keyword.
-Indicates how popular the keyword is among viewers.
-- Weight: 60%
-- avg_engagement: The mean engagement rate (likes, comments, etc.) for the keyword.
-Indicates how actively viewers engage with videos containing this keyword.
-Weight: 40%
-Normalization:
-
-Both metrics (avg_views and avg_engagement) are divided by their respective means.
-This ensures the scores are relative and comparable across different scales.
-Weighted Combination:
-
-The two normalized metrics are multiplied by their respective weights (0.6 for views, 0.4 for engagement) and summed.
-
-### Supply Score
-The supply score measures the availability of content (videos) related to a keyword. A higher supply score means there are many videos available for the keyword, making it more competitive.
 ```python
-keyword_metrics['supply_score'] = keyword_metrics['video_count'] / keyword_metrics['video_count'].mean()
+metrics['demand_score'] = (
+        0.5 * metrics['normalized_views'] +
+        0.5 * (metrics['interaction_rate'] / metrics['interaction_rate'].max())
+    ) * 10
 ```
 
-Components:
-- video_count: The total number of videos associated with the keyword.
-- Indicates how much content is already available for the keyword.
+So, as per this analysis, the opportunity score combines normalized views (relative popularity) and engagement per video (quality of interaction per video) to prioritize highly engaging and visible content. Similarly, the demand score incorporates interaction rate (total engagement relative to views) alongside normalized views to measure audience interest. This dual approach balances the quantity of reach (views) with quality of engagement (likes and comments), making the scoring relevant for identifying content that resonates with the target audience. 
 
-### Normalization:
+![Fig 4: Opportunity Distribution Matrix](./graphs/7.content-gap.png)
+![Fig 5: Top Keywords](./graphs/8.top-keywords.png)
 
-video_count is divided by its mean to make the score relative to the overall supply of videos.
+Finally, from the print results, we found that it suggests that **Old** category keywords such as “*Propagation techniques in plant breeding*” stand out with an **Opportunity Score** of **10.0/10** and a **Demand Score** of **6.7/10**, reflecting robust viewer interest (330+ million total views) and high engagement. 
 
-### Opportunity Score
-The opportunity score identifies keywords with a high demand-to-supply ratio, indicating the best opportunities for creating new content.
-```python
-keyword_metrics['opportunity_score'] = keyword_metrics['demand_score'] / keyword_metrics['supply_score']
-```
+Similarly, “*Indigenous breeding methods*” (Opportunity Score: **5.2/10**, Demand Score: **4.3/10**) and “*Historical agronomic practices*” (4.8/10, 4.0/10) confirm that traditional topics can yield substantial reach. On the **Modern** side, “*Quantum computing in plant breeding*” shows an Opportunity Score of **5.3/10** and a Demand Score of **4.8/10**, suggesting a rapidly growing niche with significant viewer potential, while “*Holistic systems breeding*” ranks similarly high (4.4/10, 4.3/10). 
 
-Components:
-- demand_score: Captures the interest in the keyword. 
-- supply_score: Captures the competition for the keyword.
-- Ratio:
-The opportunity score is calculated as the ratio of demand to supply.
-A higher ratio means high demand with low competition, making it a good opportunity for content creation.
+By contrast, **Current** methods average a lower Opportunity Score (**0.09/10**)—implying more competitive or saturated content—though some subtopics like “*Controlled hybrid seed production*” still see reasonable visibility (2.7/10 opportunity). Overall, **Old** and certain **Modern** concepts appear to offer the best balance of demand and lower competition, making them prime candidates for high-impact content creation.
 
 
-### Interpretation
-- Demand Score:
-High demand scores indicate popular keywords that attract a lot of interest and engagement.
-- Supply Score:
-High supply scores indicate highly competitive keywords with many videos already created.
-- Opportunity Score:
-High opportunity scores identify keywords with unmet demand (low competition relative to high interest).
+## Results
+As a result of the analysis, now we can take informed decisions to start a YouTube channel on plant breeding.
+- There is constant increase in the number of videos on YouTube related to plant breeding and this trend will continue in the future. Also, the engagement rate is increasing over the years. Therefore, it is a good time to start a YouTube channel on plant breeding.
+- Starting a YouTube channel on plant breeding can be incredibly impactful if we focus on high-potential topics that resonate with your audience. From the analysis, keywords like “Propagation Techniques” stand out with the highest engagement rates, 10/10 opportunity score, and over 330 million total views. This shows that users are highly interested in basic, practical and actionable content in plant breeding. 
+- Similarly, modern topics like “Quantum Computing in Plant Breeding” and “CRISPR Gene Editing” attract a niche audience of tech-savvy viewers who are eager to learn about cutting-edge innovations. These topics have moderate opportunity scores but significant engagement, making them ideal for drawing in a specific, dedicated audience.
+- The best time to publish your videos is Saturday at 10 PM or Sunday at 6 PM, as these time slots have the highest engagement rates of over 6.7%, with fewer competing videos. Early morning slots like Saturday at 6 AM also show strong engagement with reasonable competition. By consistently uploading during these peak times, we can maximize our visibility and connect with our target audience when they are most active. This publishing strategy ensures our videos reach the right audience and achieve higher engagement and interaction.
 
-## Key Findings
+# High-Potential Keywords
 
-1. **Demand Indicators**:
-   - **Top Keywords**:
-     - Keywords like `Modern Breeding Techniques`, `Hybrid Varieties`, and `CRISPR in Plants` have the highest **Opportunity Scores**, indicating high demand and strong engagement potential.
-   - **Engagement Metrics**:
-     - Keywords under the `Modern` category show the highest average **Engagement Rate** (5.6%), while `Old` technologies demonstrate steady, albeit lower, audience interest.
+| **Keyword**                      | **Opportunity Score** | **Demand Score** | **Total Views**     | **Engagement Per Video** | **Why It's Important**                                                                 |
+|-----------------------------------|-----------------------|------------------|---------------------|--------------------------|---------------------------------------------------------------------------------------|
+| Propagation Techniques            | 10.0/10              | 6.7/10           | 330,561,352         | 136,589                 | Highly searched and engages users effectively. Detailed videos on methods are valuable. |
+| Quantum Computing in Plant Breeding | 5.3/10               | 4.8/10           | 131,562,390         | 91,443                  | Modern and trending topic attracting tech-savvy professionals and students.            |
+| Indigenous Breeding Methods       | 5.2/10               | 4.3/10           | 169,463,506         | 73,288                  | Appeals to sustainable practice enthusiasts.                                           |
+| Historical Agronomic Practices    | 4.8/10               | 4.0/10           | 163,695,859         | 63,351                  | Niche audience interested in agricultural evolution.                                   |
+| CRISPR Gene Editing               | 1.5/10               | 3.7/10           | 35,236,304          | 27,352                  | Cutting-edge topic with global relevance, explaining basics can attract engagement.    |
 
-2. **Category-Level Insights**:
-   - **Modern**:
-     - This category has the **highest Opportunity Score** due to topics like genetic editing and sustainable practices gaining popularity.
-     - Total Views: **3.2M**; Engagement Rate: **5.6%**
-   - **Current**:
-     - Focused on trending topics like genome sequencing, offering moderate engagement and competitive opportunities.
-     - Total Views: **2.8M**; Engagement Rate: **4.3%**
-   - **Old**:
-     - Historical breeding methods still attract niche audiences, but lower engagement suggests less dynamic interest.
-     - Total Views: **1.9M**; Engagement Rate: **3.2%**
+# Optimal Publishing Strategy
 
-3. **Visualization Insights**:
-   - **Treemap Analysis**:
-     - Keywords under the `Modern` category dominate with higher Opportunity Scores.
-   - **Bubble Chart**:
-     - Keywords with high views and engagement (e.g., `CRISPR`, `Sustainable Practices`) present ideal starting points for content creation.
+| **Day**       | **Time Slot**      | **Engagement Rate** | **Competing Videos** | **Why This Time Works**                                                      |
+|----------------|--------------------|---------------------|----------------------|-------------------------------------------------------------------------------|
+| Saturday       | 22:00             | 6.86%              | 10                   | High engagement and low competition.                                         |
+| Sunday         | 18:00             | 6.71%              | 24                   | High engagement in the evening.                                              |
+| Saturday       | 06:00             | 5.58%              | 31                   | Good engagement and reasonable competition.                                   |
 
+# Engagement Analysis Insights
 
-## Relevance of Such Analysis
+| **Content Type**                  | **Engagement Per Video** | **Interaction Rate** | **Why Focus Here**                                                          |
+|-----------------------------------|--------------------------|-----------------------|-------------------------------------------------------------------------------|
+| Old Topics (e.g., Propagation)    | 136,589                 | High (>3%)            | Popular and reliable engagement for evergreen content.                       |
+| Modern Topics (e.g., CRISPR)      | 91,443                  | Moderate (>2%)        | Attracts a niche, technically-inclined audience.                             |
 
-1. **Identifying Content Gaps**:
-   - The analysis reveals specific keywords with high demand but relatively low supply in terms of detailed content. Targeting these gaps can attract substantial viewership.
-
-2. **Strategic Content Focus**:
-   - Keywords with high **Engagement Rates** and **Opportunity Scores** (e.g., `Modern Technologies`) indicate topics where audiences are actively interested and engaged.
-   - Avoid oversaturated or underperforming keywords.
-
-3. **Audience Preferences**:
-   - Insights on engagement trends guide the style and depth of content creation (e.g., informative, visual-heavy, or interview formats).
-
-## Actionable Recommendations
-
-1. **Focus Areas**:
-   - Begin with `Modern` topics like CRISPR and Hybrid Breeding, as they combine high audience interest and engagement.
-
-2. **Content Strategy**:
-   - Use engaging visuals and simplified explanations for complex topics to increase accessibility.
-   - Consider a series format to explore different aspects of modern plant breeding technologies.
-
-3. **Niche Selection**:
-   - Target subdomains like `Genetic Editing`, `Genome Sequencing`, and `Sustainable Breeding Practices`, which show consistent demand.
-
-4. **Content Frequency**:
-   - Publish frequently on trending topics to maintain relevance, especially under the `Current` category.
-
-5. **SEO Optimization**:
-   - Optimize video titles and descriptions with high-ranking keywords like `CRISPR`, `Hybrid Plants`, and `Genome Editing`.
-
-## Future Work
-
-1. **Trend Monitoring**:
-   - Continuously analyze evolving audience interests using new data over time to stay ahead of trends.
-
-2. **Deep Dive into Audience Segmentation**:
-   - Identify demographic and regional preferences for specific keywords to tailor content.
-
-3. **Performance Tracking**:
-   - Regularly monitor engagement metrics (views, likes, comments) to refine the content strategy.
-
-4. **Collaborative Content**:
-   - Collaborate with experts or influencers in the plant breeding domain to leverage their audience and add credibility.
-
-5. **Advanced Analytics**:
-   - Utilize predictive modeling to forecast future trends in plant breeding content on YouTube.
-
-
-## Project Setup
-### 1. Clone the repository:
-```bash
-git clone <repository-url>
-cd <repository-name>
-```
-
-### 2. Install required packages:
-```bash
-pip install -r requirements.txt
-```   
-
-### 3. Run the Application
-- Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-- Run the application:
-   ```bash
-   streamlit run dashboard.py
-   ```
-
-
-## To run a fresh analysis setup the API Configuration
-Get a YouTube Data API key from the [Google Cloud Console](https://console.cloud.google.com/)
-Set up environment variables:
-   - Copy `.env.example` to `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Edit `.env` and add your YouTube API key:
-     ```
-     YOUTUBE_API_KEY=your_actual_api_key_here
-     ```
-
-## Project Structure
-├── README.md
-├── requirements.txt
-├── .env.example
-├── .env # (git-ignored)
-├── .gitignore
-├── youtube_data_fetcher.py
-├── dashboard.py
-└── youtube_data/
-└── all_videos_data.csv
-
-## License
-The project was developed by **Nadim Khan** and **Samaneh Javidian** as a part of the **Practical Introduction to Programming with Python (1511-501) - Winter term 2024/25** course at the University of Hohenheim, Stuttgart, Germany.
+## Acknowledgements
+- The project was developed by **Nadim Khan** and **Samaneh Javidian** as a part of the **Practical Introduction to Programming with Python (1511-501) - Winter term 2024/25** course at the University of Hohenheim, Stuttgart, Germany.
+- A special thanks to **Jun. Prof. Christian Krupitzer** for his guidance and support. Also, we would like to thank **Maryam Lotfaliani** for his valuable feedback and suggestions.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Security Notice
