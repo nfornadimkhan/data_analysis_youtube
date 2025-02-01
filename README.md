@@ -1,11 +1,13 @@
 # YouTube Data Analysis Project
-This project is an analysis of YouTube (Global) data to understand the trends of plant breeding related **8,971 videos** with **2.1 billion views** for **198 keywords** in **3 categories of concepts** (Old, Current, Modern) (**English** language only). You can see the results with the help of a dashboard after running the script or see the below deployed dashboard.
+This project is an analysis of YouTube (Global) data to understand the trends of plant breeding related **8,971 videos** with **2.1 billion views** for **198 keywords** in **3 categories of concepts** (Old, Current, Modern) (**English** language only). You can see the results with the help of a dashboard after running the script or see the deployed.
+
 
 📺 See Dashboard: https://mainnfornadim.streamlit.app/
 
-![Screenshot 2025-01-28 at 11 04 25 PM](https://github.com/user-attachments/assets/11dfc423-34b2-40ea-9f00-5d5b981263d5)
+![Dashboard](graphs/dashboard.png)
 
 Github: https://github.com/nfornadimkhan/data_analysis_youtube/tree/main
+
 
 ## Project Setup
 ### 1. Clone the repository:
@@ -38,15 +40,25 @@ Set up environment variables:
 
 ## Project Structure
 ├── README.md
+
 ├── requirements.txt
+
 ├── analysis.ipynb
+
 ├── .env.example
+
 ├── .env # (git-ignored)
+
 ├── .gitignore
+
 ├── youtube_data_fetcher.py
+
 ├── dashboard.py
+
 ├── pre-commit (pre-commit hook to check for API keys in the code - a security measure)
+
 ├── youtube_data/contains all the data fetched from YouTube in .csv format.
+
 ├── fetch_state.json
 
 ## API Choice
@@ -527,7 +539,7 @@ metrics['demand_score'] = (
 So, as per this analysis, the opportunity score combines normalized views (relative popularity) and engagement per video (quality of interaction per video) to prioritize highly engaging and visible content. Similarly, the demand score incorporates interaction rate (total engagement relative to views) alongside normalized views to measure audience interest. This dual approach balances the quantity of reach (views) with quality of engagement (likes and comments), making the scoring relevant for identifying content that resonates with the target audience. 
 
 ![Fig 4: Opportunity Distribution Matrix](./graphs/7.content-gap.png)
-![Fig 5: Top Keywords](./graphs/8.top-keywords.png)
+![Fig 5: Top Keywords](./graphs/8.top_keywords.png)
 
 Finally, from the print results, we found that it suggests that **Old** category keywords such as “*Propagation techniques in plant breeding*” stand out with an **Opportunity Score** of **10.0/10** and a **Demand Score** of **6.7/10**, reflecting robust viewer interest (330+ million total views) and high engagement. 
 

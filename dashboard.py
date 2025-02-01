@@ -74,7 +74,7 @@ st.sidebar.title("🌱 Navigation")
 page = st.sidebar.radio(
     "Choose a section",
     ["Explanation", "Overview", "Trend Analysis", "Category Analysis", 
-     "Keyword Analysis", "Opportunity Analysis", "Code References"]
+     "Keyword Analysis", "Opportunity Analysis", "Update Analysis", "Code References"]
 )
 
 # Add the Explanation page
@@ -1175,6 +1175,185 @@ elif page == "Opportunity Analysis":
                     'avg_engagement': '{:.2f}%'
                 })
             )
+
+# Update Analysis Page
+elif page == "Update Analysis":
+    st.title("🔄 Update Analysis with New Data")
+    
+    st.markdown("""
+    Upload a new CSV file to update or compare the analysis. The file should follow the same structure 
+    as the original dataset with the following columns:
+    - video_id
+    - published_date
+    - view_count
+    - like_count
+    - comment_count
+    - keyword
+    - category
+    - duration_seconds
+    - engagement_rate
+    """)
+    
+    # File upload section
+    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+    
+    if uploaded_file is not None:
+        try:
+            # Load new data
+            new_df = pd.read_csv(uploaded_file)
+            new_df['published_date'] = pd.to_datetime(new_df['published_date'])
+            
+            st.success("File successfully loaded! 🎉")
+            
+            # Display data overview
+            st.subheader("📊 New Data Overview")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Videos", len(new_df))
+            with col2:
+                st.metric("Date Range", f"{new_df['published_date'].min().date()} to {new_df['published_date'].max().date()}")
+            with col3:
+                st.metric("Total Categories", len(new_df['category'].unique()))
+            
+            # Compare with original data
+            st.subheader("📈 Comparative Analysis")
+            
+            tab1, tab2, tab3 = st.tabs(["Data Comparison", "Category Distribution", "Engagement Analysis"])
+            
+            with tab1:
+                comparison_df = pd.DataFrame({
+                    'Metric': ['Total Videos', 'Total Views', 'Average Engagement Rate'],
+                    'Original Data': [
+                        len(df),
+                        df['view_count'].sum(),
+                        df['engagement_rate'].mean()
+                    ],
+                    'New Data': [
+                        len(new_df),
+                        new_df['view_count'].sum(),
+                        new_df['engagement_rate'].mean()
+                    ]
+                })
+                
+                st.dataframe(
+                    comparison_df.style.format({
+                        'Original Data': lambda x: f'{x:,.0f}' if isinstance(x, (int, float)) else x,
+                        'New Data': lambda x: f'{x:,.0f}' if isinstance(x, (int, float)) else x
+                    })
+                )
+            
+            with tab2:
+                # Category distribution comparison
+                fig = go.Figure()
+                
+                # Original data
+                cat_dist_orig = df['category'].value_counts()
+                fig.add_trace(go.Bar(
+                    name='Original Data',
+                    x=cat_dist_orig.index,
+                    y=cat_dist_orig.values,
+                    marker_color='rgba(78, 205, 196, 0.7)'
+                ))
+                
+                # New data
+                cat_dist_new = new_df['category'].value_counts()
+                fig.add_trace(go.Bar(
+                    name='New Data',
+                    x=cat_dist_new.index,
+                    y=cat_dist_new.values,
+                    marker_color='rgba(255, 107, 107, 0.7)'
+                ))
+                
+                fig.update_layout(
+                    title='Category Distribution Comparison',
+                    barmode='group',
+                    xaxis_title='Category',
+                    yaxis_title='Number of Videos'
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with tab3:
+                # Engagement analysis
+                fig = go.Figure()
+                
+                # Original data engagement
+                fig.add_trace(go.Box(
+                    y=df['engagement_rate'],
+                    name='Original Data',
+                    marker_color='rgba(78, 205, 196, 0.7)'
+                ))
+                
+                # New data engagement
+                fig.add_trace(go.Box(
+                    y=new_df['engagement_rate'],
+                    name='New Data',
+                    marker_color='rgba(255, 107, 107, 0.7)'
+                ))
+                
+                fig.update_layout(
+                    title='Engagement Rate Distribution Comparison',
+                    yaxis_title='Engagement Rate (%)'
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            # Option to update the analysis
+            st.subheader("🔄 Update Analysis")
+            update_option = st.radio(
+                "Choose how to handle the new data:",
+                ["Replace existing data", "Combine with existing data"]
+            )
+            
+            if st.button("Update Analysis"):
+                if update_option == "Replace existing data":
+                    df = new_df.copy()
+                else:  # Combine with existing data
+                    df = pd.concat([df, new_df], ignore_index=True)
+                    df = df.drop_duplicates(subset=['video_id'])
+                
+                st.success("Analysis updated successfully! 🎉")
+                st.info("Please navigate to other sections to see the updated analysis.")
+                
+        except Exception as e:
+            st.error(f"""
+            Error processing the file: {str(e)}
+            
+            Please ensure your CSV file has the correct structure and column names:
+            - video_id
+            - published_date
+            - view_count
+            - like_count
+            - comment_count
+            - keyword
+            - category
+            - duration_seconds
+            - engagement_rate
+            """)
+    
+    # Add instructions for data preparation
+    with st.expander("📋 Data Preparation Guidelines"):
+        st.markdown("""
+        ### Required Data Format
+        
+        Your CSV file should contain the following columns:
+        
+        | Column Name | Data Type | Description |
+        |------------|-----------|-------------|
+        | video_id | string | Unique identifier for each video |
+        | published_date | datetime | Publication date of the video |
+        | view_count | integer | Number of views |
+        | like_count | integer | Number of likes |
+        | comment_count | integer | Number of comments |
+        | keyword | string | Associated keyword |
+        | category | string | Category (Modern/Current/Old) |
+        | duration_seconds | integer | Video duration in seconds |
+        | engagement_rate | float | Engagement rate percentage |
+        
+        ### Data Processing Tips
+        1. Ensure all dates are in a consistent format (YYYY-MM-DD)
+        2. Remove any duplicate video entries
+        3. Clean any missing or invalid values
+        4. Verify category names match existing categories
+        """)
 
 # Code References Page
 elif page == "Code References":
